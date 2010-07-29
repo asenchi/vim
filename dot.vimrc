@@ -218,10 +218,6 @@ let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplMapCTabSwitchBufs = 1
 let g:miniBufExplModSelTarget = 1
 
-"map <leader>T <Plug>TaskList
-"let g:tlTokenList = ['FIXME', 'TODO', 'XXX', 'XXX:']
-"let g:tlWindowPosition = 0
-
 let g:manpageview_pgm= 'man -P "/usr/bin/less -is"'
 let $MANPAGER = '/usr/bin/less -is'
 
