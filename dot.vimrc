@@ -14,29 +14,23 @@ set laststatus=2
 set modeline
 set cursorline
 set ch=1
-
 set splitbelow
 set scrolloff=3
 set showmatch
-
 set shiftwidth=4
 set softtabstop=4
 set expandtab
-
 set ignorecase
 set incsearch
-
 set linebreak
-set textwidth=78
+set textwidth=80
 set backspace=indent,eol,start
 set whichwrap+=<,>,[,],h,l
 set mousefocus
-set pastetoggle=<F3>
-
+set pastetoggle=<F6>
 set autoindent
 set smartindent
 set nostartofline
-
 set showtabline=2
 set tabpagemax=50
 set guitablabel=%{GuiTabLabel()}
