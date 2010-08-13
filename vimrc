@@ -167,6 +167,7 @@ if has('gui_running')
     set guioptions-=R
     set guifont=Inconsolata:h14
     colorscheme github
+    set columns=80
 
     " C-# switches to tab
     nmap <d-1> :tabn 1
@@ -187,7 +188,7 @@ if has('gui_running')
     vmap <c-s-tab> <c-o>:tabprevious<cr>
 
     if has('gui_macvim')
-        set guifont=Menlo\ Regular:h16
+        set guifont=Menlo\ Regular:h14
         set fuoptions=maxvert,maxhorz
         colorscheme github
 
@@ -263,12 +264,12 @@ function! StripWhitespace ()
 endfunction
 map ,S :call StripWhitespace ()<CR>
 
-function StartTerm()
-    ConqueTerm zsh --login
+function! StartTerm()
+    ConqueTermTab zsh --login
     setlocal listchars=tab:\ \
 endfunction
 
-function Touch(file)
+function! Touch(file)
     execute "!touch " . a:file
     call s:UpdateNERDTree(1)
 endfunction
