@@ -6,3 +6,14 @@ dump.rdb
 *.tmproj
 *.*.swp
 .DS_Store
+autoload/
+colors/
+doc/
+ftdetect/
+ftplugin/
+indent/
+nerdtree_plugin/
+plugin/
+ruby/
+syntax/
+tmp/
