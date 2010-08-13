@@ -3,62 +3,100 @@
 " email: asenchi@asenchi.com
 
 set nocompatible
+
+" some visuals
+set ruler
+set title
+set showcmd
+set cursorline
+set number
+
+" statusline
+set laststatus=2
+set ch=2
+
 set ffs=unix,dos,mac
 set history=1000
 set visualbell
 
-set title
-set showcmd
-set ruler
-set laststatus=2
-set modeline
-set cursorline
-set ch=1
 set splitbelow
-set scrolloff=3
-set showmatch
-set shiftwidth=4
-set softtabstop=4
-set expandtab
-set ignorecase
-set incsearch
-set linebreak
-set textwidth=80
-set backspace=indent,eol,start
-set whichwrap+=<,>,[,],h,l
-set mousefocus
-set pastetoggle=<F6>
 set autoindent
 set smartindent
-set nostartofline
+set scrolloff=3
+
+" search
+set showmatch
+set incsearch
+set ignorecase
+
+" whitespace
+set shiftwidth=4
+set softtabstop=4
 set showtabline=2
-set tabpagemax=50
-set guitablabel=%{GuiTabLabel()}
-set number
+set expandtab
+
+" text width
+set linebreak
+set textwidth=80
+
+" backspace across lines and indents
+set backspace=indent,eol,start
+
+" allow us to move across lines
+set whichwrap+=<,>,[,],h,l
+
+" follow the mouse
+set mousefocus
+
+" Turn off formatting when pasting
+set pastetoggle=<F6>
+
+" backups
 set backupdir=$HOME/.sessions
 set backupcopy=yes
 set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*
 set directory=~/.vim/swap//,.,~/tmp,/tmp
 
+" tab completion
+set wildmode=list:longest,list:full
+set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,.DS_Store
+
+" leader
 let mapleader = ","
 let g:mapleader = ","
+
+" NERDTree
+let NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$']
+map <leader>D :NERDTreeToggle<CR>
+
+" gist
+let g:gist_clip_command = 'pbcopy'
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+
+" fugitive
+let g:fugitive_git_executable = '/Users/asenchi/Developer/bin/git'
+
+" manpages
+let g:manpageview_pgm= 'man -P "/usr/bin/less -is"'
+let $MANPAGER = '/usr/bin/less -is'
 
 " toggle line numbers
 map <leader>n :set number<CR>
 map <leader>N :set nonumber<CR>
 
 " open vimrc in a split window
-map <leader>v :sp ~/.vimrc<CR><C-W>_
-
+map <leader>v :tabe ~/.vimrc<CR>
 " source vim and let me know.
 map <leader>V :source ~/.vimrc<CR>:exe ":echo 'vimrc reloaded'"<CR>
-
-map <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " quick write
 nmap <leader>w :w<CR>
 nmap <leader>W :w!<CR>
 
+" shortcuts for appending local path
+map <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 " change path across all windows
 nmap <leader>cd :cd%:p:h<CR>
 " change path locally
@@ -69,8 +107,7 @@ nmap <CR> o<Esc>
 
 " view registers
 nmap <leader>r :registers<CR>
-
-" map the various registers to a leader shortcut for pasting from them
+" map registers to a leader shortcut
 nmap <leader>0 "0p
 nmap <leader>1 "1p
 nmap <leader>2 "2p
@@ -82,10 +119,6 @@ nmap <leader>7 "7p
 nmap <leader>8 "8p
 nmap <leader>9 "9p
 
-set sessionoptions=blank,buffers,curdir,folds,help,resize,tabpages,winsize
-map <C-q> :mksession! ~/.sessions/session.vim<cr>
-map <C-s> :source ~/.sessions/session.vim<cr>
-
 " I work mostly on a laptop, f1 gets in the ways sometimes.
 map <F1> <Esc>
 
@@ -94,14 +127,14 @@ nmap H ^
 nmap L $
 nmap F %
 
+" fill window with buffer
+nmap <leader>F <C-W>_
+
 " mimic some common emacs keys
 imap <C-a> <C-o>0
 imap <C-e> <C-o>$
 map <C-e> $
 map <C-a> 0
-
-" toggle the NERDTree directory listing
-map <leader>D :NERDTreeToggle<CR>
 
 " If I forgot to sudo vim a file, do that with :w!!
 cmap w!! %!sudo tee > /dev/null %
@@ -122,16 +155,8 @@ map gB :bprev<cr>
 syntax on
 filetype plugin indent on
 
-highlight Comment ctermfg=DarkGrey guifg=#333333
-highlight StatusLineNC ctermfg=Black ctermbg=DarkGrey cterm=bold
-highlight StatusLine ctermbg=Black ctermfg=LightGrey
-set list listchars=trail:.,tab:>.
-highlight SpecialKey ctermfg=DarkGray ctermbg=Black
-
 if has('gui_running')
     set encoding=utf-8
-    set columns=110
-    set lines=46
     set guioptions+=c
     set guioptions-=b
     set guioptions-=T
@@ -185,27 +210,17 @@ if has('gui_running')
         map! <D-8> <C-O>:tabn 8<CR>
         map! <D-9> <C-O>:tabn 9<CR>
         set antialias
+
+        macmenu &File.New\ Tab key=<nop>
+        map <D-t> :CommandT<CR>
+
+        map <D-e> :call StartTerm()<CR>
     endif
 endif
 
 " date shortcuts
 iab YMD <C-R>=strftime("%Y-%m-%d")<CR>
 iab NOW <C-R>=strftime("%c")<CR>
-
-" django abbreviations
-ab djbl <Esc>bi{% block <Esc>ea %}{% endblock %}<Esc>h%i
-ab djcy <Esc>bi{% cycle '' '' as <Esc>ea %}<Esc>h%2w
-ab djfo <Esc>i{% firstof %}<Esc>3ha
-ab djfi <Esc>i{% filter %}<CR>{% endfilter %}<Esc>kh%2Ea
-ab djifchg <Esc>i{% ifchanged %}{% endifchanged %}<Esc>h%i
-ab djifeql <Esc>i{% ifequal %}{% endifequal %}<Esc>h2%2Ea
-ab djifneql <Esc>i{% ifnotequal %}{% endifnotequal %}<Esc>h2%2Ea
-ab djinc <Esc>^i{% include <Esc>$a %}<Esc>
-ab djext <Esc>^i{% extends <Esc>$a %}<Esc>
-ab djspaceless <Esc>i{% spaceless %}<CR>{% endspaceless %}<Esc>h%i
-ab djssi <Esc>i{% ssi %}<Esc>2hi
-ab djurl <Esc>i{% url %}<Esc>2hi
-ab djload <Esc>i{% load %}<Esc>2hi
 
 function! CurDir()
     let curdir = substitute(getcwd(), "/Users/asenchi", "~", "g")
@@ -248,15 +263,17 @@ function! StripWhitespace ()
 endfunction
 map ,S :call StripWhitespace ()<CR>
 
+function StartTerm()
+    ConqueTerm zsh --login
+    setlocal listchars=tab:\ \
+endfunction
+
+function Touch(file)
+    execute "!touch " . a:file
+    call s:UpdateNERDTree(1)
+endfunction
+
 set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ %r%{CurDir()}%h
-
-let g:miniBufExplMapWindowNavVim = 1
-let g:miniBufExplMapWindowNavArrows = 1
-let g:miniBufExplMapCTabSwitchBufs = 1
-let g:miniBufExplModSelTarget = 1
-
-let g:manpageview_pgm= 'man -P "/usr/bin/less -is"'
-let $MANPAGER = '/usr/bin/less -is'
 
 let perl_include_pod = 1
 let perl_extended_vars = 1
@@ -266,7 +283,7 @@ au BufRead,BufNewFile *.md          set ft=mkd tw=72 ts=2 sw=2 expandtab
 au BufRead,BufNewFile *.markdown    set ft=mkd tw=72 ts=2 sw=2 expandtab
 
 au FileType javascript  setlocal nocindent
-au FileType mail,human  set formatoptions+=t tw=72
+au FileType mail,human  set formatoptions+=t tw=78
 au Filetype gitcommit   set tw=70
 au FileType text    set tw=78 formatoptions+=tcan2 equalprg=fmt
 au FileType perl    set makeprg=perl\ -c\ %\ $* errorformat=%f:%l:%m autowrite
