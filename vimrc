@@ -13,7 +13,7 @@ set number
 
 " statusline
 set laststatus=2
-set ch=2
+set ch=1
 
 set ffs=unix,dos,mac
 set history=1000
@@ -67,7 +67,7 @@ let g:mapleader = ","
 
 " NERDTree
 let NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$']
-map <leader>D :NERDTreeToggle<CR>
+map <leader>d :NERDTreeToggle<CR>
 
 " gist
 let g:gist_clip_command = 'pbcopy'
@@ -167,7 +167,7 @@ if has('gui_running')
     set guioptions-=R
     set guifont=Inconsolata:h14
     colorscheme github
-    set columns=80
+    set columns=110
 
     " C-# switches to tab
     nmap <d-1> :tabn 1
