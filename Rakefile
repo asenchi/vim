@@ -93,7 +93,7 @@ vim_plugin_task "surround",         "http://github.com/tpope/vim-surround.git"
 vim_plugin_task "taglist",          "http://vim.sourceforge.net/scripts/download_script.php?src_id=7701"
 vim_plugin_task "vividchalk",       "http://github.com/tpope/vim-vividchalk.git"
 vim_plugin_task "gist",             "http://github.com/mattn/gist-vim.git"
-vim_plugin_task "bufexplorer",      "http://vim.org/scripts/download_script.php?src_id=12904"
+vim_plugin_task "bufexplorer",      "http://vim.sourceforge.net/scripts/download_script.php?src_id=12904"
 
 vim_plugin_task "command_t",        "http://github.com/wincent/Command-T.git" do
   sh "find ruby -name '.gitignore' | xargs rm"
@@ -124,7 +124,7 @@ end
 
 desc "link vimrc to ~/.vimrc"
 task :link_vimrc do
-  %w[ vimrc gvimrc ].each do |file|
+  %w[ vimrc ].each do |file|
     dest = File.expand_path("~/.#{file}")
     unless File.exist?(dest)
       ln_s(File.expand_path("../#{file}", __FILE__), dest)
