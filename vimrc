@@ -212,7 +212,6 @@ if has('gui_running')
         map! <D-9> <C-O>:tabn 9<CR>
         set antialias
 
-        macmenu &File.New\ Tab key=<nop>
         map <D-t> :CommandT<CR>
 
         map <D-e> :call StartTerm()<CR>
@@ -290,4 +289,3 @@ au FileType text    set tw=78 formatoptions+=tcan2 equalprg=fmt
 au FileType perl    set makeprg=perl\ -c\ %\ $* errorformat=%f:%l:%m autowrite
 au FileType make    set noexpandtab sw=8
 au FileType html    set ts=2 sw=2 sts=2
-au Filetype html,xml,xsl source $HOME/.vim/scripts/closetag.vim
