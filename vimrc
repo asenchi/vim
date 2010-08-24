@@ -148,9 +148,6 @@ map tm <Esc>:tabmove<cr>
 
 " buffers!
 map <C-b> <Esc>:BufExplorer<cr>
-map gz :bdelete<cr>
-map gb :bnext<cr>
-map gB :bprev<cr>
 
 syntax on
 filetype plugin indent on
