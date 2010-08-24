@@ -163,7 +163,7 @@ if has('gui_running')
     set guioptions-=r
     set guioptions-=R
     set guifont=Inconsolata:h14
-    colorscheme github
+    colorscheme whitespace
     set columns=110
 
     " C-# switches to tab
@@ -187,7 +187,7 @@ if has('gui_running')
     if has('gui_macvim')
         set guifont=Menlo\ Regular:h14
         set fuoptions=maxvert,maxhorz
-        colorscheme github
+        colorscheme whitespace
 
         map <D-1> :tabn 1<CR>
         map <D-2> :tabn 2<CR>
