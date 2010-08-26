@@ -37,7 +37,7 @@ set expandtab
 
 " text width
 set linebreak
-set textwidth=80
+set textwidth=0
 
 " backspace across lines and indents
 set backspace=indent,eol,start
@@ -47,9 +47,14 @@ set whichwrap+=<,>,[,],h,l
 
 " follow the mouse
 set mousefocus
+" hide the mouse while typing
+set mousehide
 
 " Turn off formatting when pasting
 set pastetoggle=<F6>
+
+" match angle brackets
+set matchpairs+=<:>
 
 " backups
 set backupdir=$HOME/.sessions
@@ -126,6 +131,7 @@ map <F1> <Esc>
 nmap H ^
 nmap L $
 nmap F %
+nmap Y y$
 
 " fill window with buffer
 nmap <leader>F <C-W>_
