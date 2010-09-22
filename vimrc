@@ -2,14 +2,14 @@
 " author: curt micol
 " email: asenchi@asenchi.com
 
+" A must for all VIM's
 set nocompatible
 
 " some visuals
 set ruler
 set title
 set showcmd
-set cursorline
-set number
+set relativenumber
 
 " statusline
 set laststatus=2
@@ -19,7 +19,6 @@ set ffs=unix,dos,mac
 set history=1000
 set visualbell
 
-set splitbelow
 set autoindent
 set smartindent
 set scrolloff=3
@@ -30,6 +29,7 @@ set incsearch
 set ignorecase
 
 " whitespace
+set tabstop=8
 set shiftwidth=4
 set softtabstop=4
 set showtabline=2
@@ -37,7 +37,7 @@ set expandtab
 
 " text width
 set linebreak
-set textwidth=0
+set textwidth=78
 
 " backspace across lines and indents
 set backspace=indent,eol,start
@@ -45,8 +45,6 @@ set backspace=indent,eol,start
 " allow us to move across lines
 set whichwrap+=<,>,[,],h,l
 
-" follow the mouse
-set mousefocus
 " hide the mouse while typing
 set mousehide
 
@@ -57,18 +55,21 @@ set pastetoggle=<F6>
 set matchpairs+=<:>
 
 " backups
-set backupdir=$HOME/.sessions
+set backupdir=~/.vim/sessions
 set backupcopy=yes
 set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*
 set directory=~/.vim/swap//,.,~/tmp,/tmp
 
 " tab completion
+set wildmenu
 set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,.DS_Store
+set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,.DS_Store,*.jpg,*.png,*.gif
+set wildmode=list:full
 
 " leader
 let mapleader = ","
 let g:mapleader = ","
+let maplocalleader = "\\"
 
 " NERDTree
 let NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$']
@@ -80,7 +81,7 @@ let g:gist_detect_filetype = 1
 let g:gist_open_browser_after_post = 1
 
 " fugitive
-let g:fugitive_git_executable = '/Users/asenchi/Developer/bin/git'
+let g:fugitive_git_executable = '~/Developer/bin/git'
 
 " manpages
 let g:manpageview_pgm= 'man -P "/usr/bin/less -is"'
@@ -100,29 +101,25 @@ nmap <leader>w :w<CR>
 nmap <leader>W :w!<CR>
 
 " shortcuts for appending local path
-map <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
+
 " change path across all windows
 nmap <leader>cd :cd%:p:h<CR>
 " change path locally
-nmap <leader>lcd :lcd%:p:h<CR>
+nmap <leader>. :lcd%:p:h<CR>
 
 " new line
 nmap <CR> o<Esc>
 
 " view registers
 nmap <leader>r :registers<CR>
-" map registers to a leader shortcut
-nmap <leader>0 "0p
-nmap <leader>1 "1p
-nmap <leader>2 "2p
-nmap <leader>3 "3p
-nmap <leader>4 "4p
-nmap <leader>5 "5p
-nmap <leader>6 "6p
-nmap <leader>7 "7p
-nmap <leader>8 "8p
-nmap <leader>9 "9p
+
+" Some nice reST shortcuts.
+noremap <leader>h1 yypVr=
+noremap <leader>h2 yypVr-
+
+" remove search hilight
+nnoremap <leader><space> :nohlsearch<CR>
 
 " I work mostly on a laptop, f1 gets in the ways sometimes.
 map <F1> <Esc>
@@ -132,6 +129,10 @@ nmap H ^
 nmap L $
 nmap F %
 nmap Y y$
+
+" tab for brackets
+nnoremap <tab> %
+vnoremap <tab> %
 
 " fill window with buffer
 nmap <leader>F <C-W>_
@@ -156,9 +157,11 @@ map tm <Esc>:tabmove<cr>
 map <C-b> <Esc>:BufExplorer<cr>
 
 syntax on
+filetype on
 filetype plugin indent on
 
 if has('gui_running')
+    set cursorline
     set encoding=utf-8
     set guioptions+=c
     set guioptions-=b
@@ -169,8 +172,9 @@ if has('gui_running')
     set guioptions-=r
     set guioptions-=R
     set guifont=Inconsolata:h14
-    colorscheme whitespace
-    set columns=110
+    colorscheme molokai
+    set columns=179
+    set lines=50
 
     " C-# switches to tab
     nmap <d-1> :tabn 1
@@ -193,7 +197,7 @@ if has('gui_running')
     if has('gui_macvim')
         set guifont=Menlo\ Regular:h14
         set fuoptions=maxvert,maxhorz
-        colorscheme whitespace
+        colorscheme molokai
 
         map <D-1> :tabn 1<CR>
         map <D-2> :tabn 2<CR>
@@ -215,15 +219,26 @@ if has('gui_running')
         map! <D-9> <C-O>:tabn 9<CR>
         set antialias
 
-        map <D-t> :CommandT<CR>
-
-        map <D-e> :call StartTerm()<CR>
+        map <leader>o :CommandT<CR>
+        map <leader>e :call StartTerm()<CR>
     endif
+else
+    colorscheme desert
 endif
 
 " date shortcuts
 iab YMD <C-R>=strftime("%Y-%m-%d")<CR>
 iab NOW <C-R>=strftime("%c")<CR>
+
+" toggle between number and relative number on ,l
+nnoremap <leader>l :call ToggleRelativeAbsoluteNumber()<CR>
+function! ToggleRelativeAbsoluteNumber()
+  if &number
+    set relativenumber
+  else
+    set number
+  endif
+endfunction
 
 function! CurDir()
     let curdir = substitute(getcwd(), "/Users/asenchi", "~", "g")
@@ -276,19 +291,19 @@ function! Touch(file)
     call s:UpdateNERDTree(1)
 endfunction
 
-set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ %r%{CurDir()}%h
+set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ %r%{CurDir()}%h\ %{fugitive#statusline()}
 
-let perl_include_pod = 1
-let perl_extended_vars = 1
-
-au BufRead,BufNewFile *.sql         set ft=pgsql
-au BufRead,BufNewFile *.md          set ft=mkd tw=72 ts=2 sw=2 expandtab
-au BufRead,BufNewFile *.markdown    set ft=mkd tw=72 ts=2 sw=2 expandtab
+au BufRead,BufNewFile *.sql         setlocal ft=pgsql
+au BufRead,BufNewFile *.md          setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
+au BufRead,BufNewFile *.markdown    setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
+au BufRead,BufNewFile *.rst         setlocal ft=rst tw=78 ts=4 sw=4 expandtab
 
 au FileType javascript  setlocal nocindent
-au FileType mail,human  set formatoptions+=t tw=78
-au Filetype gitcommit   set tw=70
-au FileType text    set tw=78 formatoptions+=tcan2 equalprg=fmt
-au FileType perl    set makeprg=perl\ -c\ %\ $* errorformat=%f:%l:%m autowrite
-au FileType make    set noexpandtab sw=8
-au FileType html    set ts=2 sw=2 sts=2
+au FileType mail,human  setlocal formatoptions+=t tw=78
+au Filetype gitcommit   setlocal tw=70
+au FileType txt,text    setlocal tw=78
+au FileType perl    setlocal makeprg=perl\ -c\ %\ $* errorformat=%f:%l:%m autowrite
+au FileType make    setlocal noexpandtab sw=8
+au FileType html    setlocal ts=2 sw=2 sts=2
+let html_no_rendering=1
+au FileType python  setlocal complete+=k~/.vim/syntax/python.vim "isk+=.,(
