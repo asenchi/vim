@@ -95,7 +95,7 @@ vim_plugin_task "vividchalk",       "http://github.com/tpope/vim-vividchalk.git"
 vim_plugin_task "gist",             "http://github.com/mattn/gist-vim.git"
 vim_plugin_task "bufexplorer",      "http://vim.sourceforge.net/scripts/download_script.php?src_id=12904"
 vim_plugin_task "whitespace",       "http://github.com/asenchi/whitespace-vim.git"
-vim_plugin_task "pyflakes",         "http://github.com/kevinw/pyflakes-vim.git"
+vim_plugin_task "blackboard",       "http://github.com/nelstrom/vim-blackboard.git"
 
 vim_plugin_task "command_t",        "http://github.com/wincent/Command-T.git" do
   sh "find ruby -name '.gitignore' | xargs rm"

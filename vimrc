@@ -9,7 +9,6 @@ set nocompatible
 set ruler
 set title
 set showcmd
-set relativenumber
 
 " statusline
 set laststatus=2
@@ -37,7 +36,6 @@ set expandtab
 
 " text width
 set linebreak
-set textwidth=78
 
 " backspace across lines and indents
 set backspace=indent,eol,start
@@ -47,6 +45,9 @@ set whichwrap+=<,>,[,],h,l
 
 " hide the mouse while typing
 set mousehide
+if has('mouse')
+    set mouse=a
+endif
 
 " Turn off formatting when pasting
 set pastetoggle=<F6>
@@ -93,15 +94,20 @@ map <leader>N :set nonumber<CR>
 
 " open vimrc in a split window
 map <leader>v :tabe ~/.vimrc<CR>
-" source vim and let me know.
-map <leader>V :source ~/.vimrc<CR>:exe ":echo 'vimrc reloaded'"<CR>
+if has("autocmd")
+    augroup vimrchooks
+        au!
+        autocmd bufwritepost .vimrc source ~/.vimrc
+    augroup END
+endif
 
 " quick write
 nmap <leader>w :w<CR>
 nmap <leader>W :w!<CR>
 
 " shortcuts for appending local path
-map <leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>e :e <C-R>=expand("%:p:h") . "/"<CR>
+map <leader>te :tabe <C-R>=expand("%:p:h") . "/"<CR>
 
 " change path across all windows
 nmap <leader>cd :cd%:p:h<CR>
@@ -114,9 +120,9 @@ nmap <CR> o<Esc>
 " view registers
 nmap <leader>r :registers<CR>
 
-" Some nice reST shortcuts.
-noremap <leader>h1 yypVr=
-noremap <leader>h2 yypVr-
+" rst shortcuts
+" Press '@h' and the character you want to use for heading
+let @h = "yypVr"
 
 " remove search hilight
 nnoremap <leader><space> :nohlsearch<CR>
@@ -125,8 +131,6 @@ nnoremap <leader><space> :nohlsearch<CR>
 map <F1> <Esc>
 
 " Some sane shortcuts
-nmap H ^
-nmap L $
 nmap F %
 nmap Y y$
 
@@ -135,7 +139,17 @@ nnoremap <tab> %
 vnoremap <tab> %
 
 " fill window with buffer
-nmap <leader>F <C-W>_
+map <leader>F <C-W>_
+map <C-k> <C-W>k
+map <C-j> <C-W>j
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Move selection up and down
+map <C-Down> ddp
+map <C-Up> dd<Up>P
+vmap <C-Down> xp`[V`]
+vmap <C-Up> x<Up>P`[V`]
 
 " mimic some common emacs keys
 imap <C-a> <C-o>0
@@ -156,25 +170,45 @@ map tm <Esc>:tabmove<cr>
 " buffers!
 map <C-b> <Esc>:BufExplorer<cr>
 
-syntax on
-filetype on
-filetype plugin indent on
+if &t_Co > 2 || has('gui_running')
+    syntax on
+    set hlsearch
+endif
+
+if has('autocmd')
+    filetype plugin indent on
+
+    " Group these to make it easy to delete
+    augroup vimrcEx
+    au!
+    autocmd FileType text setlocal textwidth=78
+
+    " Jump to last known cursor position.
+    autocmd BufReadPost *
+        \ if line("'\"") > 1 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ end
+    augroup END
+else
+    set autoindent
+endif
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+    command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+        \ | wincmd p | diffthis
+endif
 
 if has('gui_running')
     set cursorline
     set encoding=utf-8
-    set guioptions+=c
-    set guioptions-=b
-    set guioptions-=T
-    set guioptions-=m
-    set guioptions-=l
-    set guioptions-=L
-    set guioptions-=r
-    set guioptions-=R
+    set go+=c
+    set go-=bTmlLrR
     set guifont=Inconsolata:h14
     colorscheme molokai
-    set columns=179
-    set lines=50
+    set relativenumber
 
     " C-# switches to tab
     nmap <d-1> :tabn 1
@@ -220,7 +254,12 @@ if has('gui_running')
         set antialias
 
         map <leader>o :CommandT<CR>
-        map <leader>e :call StartTerm()<CR>
+        map <leader>s :call StartTerm()<CR>
+
+        nmap <D-[> <<
+        nmap <D-]> >>
+        vmap <D-[> <gv
+        vmap <D-]> >gv
     endif
 else
     colorscheme desert
@@ -231,7 +270,7 @@ iab YMD <C-R>=strftime("%Y-%m-%d")<CR>
 iab NOW <C-R>=strftime("%c")<CR>
 
 " toggle between number and relative number on ,l
-nnoremap <leader>l :call ToggleRelativeAbsoluteNumber()<CR>
+nnoremap <leader>R :call ToggleRelativeAbsoluteNumber()<CR>
 function! ToggleRelativeAbsoluteNumber()
   if &number
     set relativenumber
@@ -291,19 +330,30 @@ function! Touch(file)
     call s:UpdateNERDTree(1)
 endfunction
 
+nmap <C-S-P> :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunction
+
 set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ %r%{CurDir()}%h\ %{fugitive#statusline()}
 
-au BufRead,BufNewFile *.sql         setlocal ft=pgsql
-au BufRead,BufNewFile *.md          setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
-au BufRead,BufNewFile *.markdown    setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
-au BufRead,BufNewFile *.rst         setlocal ft=rst tw=78 ts=4 sw=4 expandtab
+if has("autocmd")
+    au BufRead,BufNewFile *.sql         setlocal ft=pgsql
+    au BufRead,BufNewFile *.md          setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
+    au BufRead,BufNewFile *.markdown    setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
+    au BufRead,BufNewFile *.rst         setlocal ft=rst tw=78 ts=4 sw=4 expandtab
+endif
 
-au FileType javascript  setlocal nocindent
-au FileType mail,human  setlocal formatoptions+=t tw=78
-au Filetype gitcommit   setlocal tw=70
-au FileType txt,text    setlocal tw=78
-au FileType perl    setlocal makeprg=perl\ -c\ %\ $* errorformat=%f:%l:%m autowrite
-au FileType make    setlocal noexpandtab sw=8
-au FileType html    setlocal ts=2 sw=2 sts=2
-let html_no_rendering=1
-au FileType python  setlocal complete+=k~/.vim/syntax/python.vim "isk+=.,(
+if has("autocmd")
+    au FileType html,css,ruby setlocal ts=2 sts=2 sw=2 expandtab
+    au FileType javascript setlocal ts=4 sts=4 sw=4 noexpandtab
+    au FileType gitcommit setlocal tw=60
+    au FileType make setlocal noexpandtab
+    au FileType 
+        \ perl setlocal makeprg=perl\ -c\ %\ $* errorformat=%f:%l:%m autowrite
+    au FileType python setlocal complete+=k~/.vim/syntax/python.vim "isk+=.,(
+    let html_no_rendering=1
+endif
