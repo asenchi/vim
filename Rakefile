@@ -19,7 +19,6 @@ def vim_plugin_task(name, repo=nil)
           sh "git clone #{repo} #{dir}"
 
         elsif repo =~ /download_script/
-        # TODO: this assumes all vimscripts downloads are zips (can be vba or targz)
           sh "curl #{repo} > #{dir}.zip"
           sh "unzip -o #{dir}.zip -d #{dir}"
 
@@ -45,7 +44,7 @@ def vim_plugin_task(name, repo=nil)
       end
 
       task :install => [:pull] + subdirs do
-        Dir.chdir dir do
+       Dir.chdir dir do
           if File.exists?("Rakefile") and `rake -T` =~ /^rake install/
             sh "rake install"
           elsif File.exists?("install.sh")
@@ -96,6 +95,10 @@ vim_plugin_task "gist",             "http://github.com/mattn/gist-vim.git"
 vim_plugin_task "bufexplorer",      "http://vim.sourceforge.net/scripts/download_script.php?src_id=12904"
 vim_plugin_task "whitespace",       "http://github.com/asenchi/whitespace-vim.git"
 vim_plugin_task "blackboard",       "http://github.com/nelstrom/vim-blackboard.git"
+
+vim_plugin_task "confluence" do
+  sh "curl http://www.vim.org/scripts/download_script.php?src_id=11306 > plugin/confluence.vim"
+end
 
 vim_plugin_task "command_t",        "http://github.com/wincent/Command-T.git" do
   sh "find ruby -name '.gitignore' | xargs rm"

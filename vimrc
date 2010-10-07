@@ -205,7 +205,14 @@ if has('gui_running')
     set cursorline
     set encoding=utf-8
     set go+=c
-    set go-=bTmlLrR
+    set go-=m
+    set go-=r
+    set go-=R
+    set go-=l
+    set go-=L
+    set go-=T
+    set go-=b
+    set go-=h
     set guifont=Inconsolata:h14
     colorscheme molokai
     set relativenumber
@@ -345,6 +352,7 @@ if has("autocmd")
     au BufRead,BufNewFile *.md          setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
     au BufRead,BufNewFile *.markdown    setlocal ft=mkd tw=78 ts=2 sw=2 expandtab
     au BufRead,BufNewFile *.rst         setlocal ft=rst tw=78 ts=4 sw=4 expandtab
+    au BufNewFile,BufRead *.csv         setlocal ft=csv
 endif
 
 if has("autocmd")
