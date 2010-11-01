@@ -36,6 +36,9 @@ set expandtab
 
 " text width
 set linebreak
+set textwidth=78
+
+set number
 
 " backspace across lines and indents
 set backspace=indent,eol,start
@@ -126,6 +129,9 @@ let @h = "yypVr"
 
 " remove search hilight
 nnoremap <leader><space> :nohlsearch<CR>
+
+" replace <ESC> functionality with easier to reach key cmds.
+inoremap jj <ESC>
 
 " I work mostly on a laptop, f1 gets in the ways sometimes.
 map <F1> <Esc>
